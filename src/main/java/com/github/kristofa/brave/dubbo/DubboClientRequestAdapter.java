@@ -1,7 +1,7 @@
 package com.github.kristofa.brave.dubbo;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 
 import com.alibaba.dubbo.rpc.Invocation;
 import com.alibaba.dubbo.rpc.Invoker;
@@ -52,7 +52,10 @@ public class DubboClientRequestAdapter implements ClientRequestAdapter {
 
 	@Override
 	public Collection<KeyValueAnnotation> requestAnnotations() {
-		return Collections.singletonList(KeyValueAnnotation.create("url", RpcContext.getContext().getUrl().toString()));
+		Collection<KeyValueAnnotation> list = new ArrayList<KeyValueAnnotation>();
+		list.add(KeyValueAnnotation.create("url", RpcContext.getContext().getUrl().toString()));
+		list.add(KeyValueAnnotation.create("client_attachments", RpcContext.getContext().getAttachments().toString()));
+		return list;
 	}
 
 	@Override

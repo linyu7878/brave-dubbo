@@ -3,6 +3,7 @@ package com.github.kristofa.brave.dubbo;
 import static com.github.kristofa.brave.IdConversion.convertToLong;
 
 import java.net.InetSocketAddress;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 
@@ -60,12 +61,11 @@ public class DubboServerRequestAdapter implements ServerRequestAdapter {
 
 	@Override
 	public Collection<KeyValueAnnotation> requestAnnotations() {
-
-		String ipAddr = RpcContext.getContext().getUrl().getIp();
-		InetSocketAddress inetSocketAddress = RpcContext.getContext().getRemoteAddress();
-		final String clientName = clientNameProvider.resolveClientName(RpcContext.getContext());
-
-		//
+		// String ipAddr = RpcContext.getContext().getUrl().getIp();
+		// InetSocketAddress inetSocketAddress =
+		// RpcContext.getContext().getRemoteAddress();
+		// final String clientName =
+		// clientNameProvider.resolveClientName(RpcContext.getContext());
 		// serverTracer.submitBinaryAnnotation(zipkin.Constants.CLIENT_ADDR,
 		// clientName + "(" + ipAddr + ":" + inetSocketAddress.getPort() + ")");
 		// serverTracer.setServerReceived(IPConversion.convertToInt(ipAddr),
@@ -73,8 +73,10 @@ public class DubboServerRequestAdapter implements ServerRequestAdapter {
 
 		InetSocketAddress socketAddress = RpcContext.getContext().getLocalAddress();
 		if (socketAddress != null) {
-			KeyValueAnnotation remoteAddrAnnotation = KeyValueAnnotation.create("address", socketAddress.toString());
-			return Collections.singleton(remoteAddrAnnotation);
+			Collection<KeyValueAnnotation> list = new ArrayList<KeyValueAnnotation>();
+			list.add(KeyValueAnnotation.create("address", socketAddress.toString()));
+			list.add(KeyValueAnnotation.create("server_attachments", RpcContext.getContext().getAttachments().toString()));
+			return list;
 		} else {
 			return Collections.emptyList();
 		}
