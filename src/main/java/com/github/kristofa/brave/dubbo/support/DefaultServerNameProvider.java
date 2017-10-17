@@ -8,12 +8,12 @@ import com.github.kristofa.brave.dubbo.DubboServerNameProvider;
  */
 
 /**
- *   解析dubbo Provider applicationName
+ * 解析dubbo Provider applicationName
  */
 public class DefaultServerNameProvider implements DubboServerNameProvider {
-    @Override
-    public String resolveServerName(RpcContext rpcContext) {
-         String application = RpcContext.getContext().getUrl().getParameter("application");
-         return application;
-    }
+	@Override
+	public String resolveServerName(RpcContext rpcContext) {
+		String application = RpcContext.getContext().getUrl().getParameter("application");
+		return "";
+	}
 }
