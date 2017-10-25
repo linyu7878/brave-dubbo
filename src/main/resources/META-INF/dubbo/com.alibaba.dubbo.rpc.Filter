@@ -1,2 +1,3 @@
-braveConsumerFilter=com.github.kristofa.brave.dubbo.BraveConsumerFilter
-braveProviderFilter=com.github.kristofa.brave.dubbo.BraveProviderFilter
+hystrixFilter=com.ecall.fasteroms.dubbo.rpc.filter.HystrixFilter
+braveConsumerFilter=com.ecall.fasteroms.dubbo.rpc.filter.BraveConsumerFilter
+braveProviderFilter=com.ecall.fasteroms.dubbo.rpc.filter.BraveProviderFilter

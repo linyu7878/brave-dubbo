@@ -1,4 +1,4 @@
-package com.github.kristofa.brave.dubbo;
+package com.ecall.fasteroms.dubbo.rpc.filter.brave;
 
 import static com.github.kristofa.brave.IdConversion.convertToLong;
 
@@ -15,8 +15,6 @@ import com.github.kristofa.brave.ServerRequestAdapter;
 import com.github.kristofa.brave.ServerTracer;
 import com.github.kristofa.brave.SpanId;
 import com.github.kristofa.brave.TraceData;
-import com.github.kristofa.brave.dubbo.support.DefaultClientNameProvider;
-import com.github.kristofa.brave.dubbo.support.DefaultSpanNameProvider;
 
 /**
  * Created by chenjg on 16/7/24.
@@ -75,7 +73,6 @@ public class DubboServerRequestAdapter implements ServerRequestAdapter {
 		if (socketAddress != null) {
 			Collection<KeyValueAnnotation> list = new ArrayList<KeyValueAnnotation>();
 			list.add(KeyValueAnnotation.create("address", socketAddress.toString()));
-			list.add(KeyValueAnnotation.create("server_attachments", RpcContext.getContext().getAttachments().toString()));
 			return list;
 		} else {
 			return Collections.emptyList();

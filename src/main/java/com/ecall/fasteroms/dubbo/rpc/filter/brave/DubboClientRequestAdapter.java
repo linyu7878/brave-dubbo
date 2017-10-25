@@ -1,4 +1,4 @@
-package com.github.kristofa.brave.dubbo;
+package com.ecall.fasteroms.dubbo.rpc.filter.brave;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -10,8 +10,6 @@ import com.github.kristofa.brave.ClientRequestAdapter;
 import com.github.kristofa.brave.IdConversion;
 import com.github.kristofa.brave.KeyValueAnnotation;
 import com.github.kristofa.brave.SpanId;
-import com.github.kristofa.brave.dubbo.support.DefaultServerNameProvider;
-import com.github.kristofa.brave.dubbo.support.DefaultSpanNameProvider;
 import com.github.kristofa.brave.internal.Nullable;
 import com.twitter.zipkin.gen.Endpoint;
 
@@ -54,20 +52,12 @@ public class DubboClientRequestAdapter implements ClientRequestAdapter {
 	public Collection<KeyValueAnnotation> requestAnnotations() {
 		Collection<KeyValueAnnotation> list = new ArrayList<KeyValueAnnotation>();
 		list.add(KeyValueAnnotation.create("url", RpcContext.getContext().getUrl().toString()));
-		list.add(KeyValueAnnotation.create("client_attachments", RpcContext.getContext().getAttachments().toString()));
 		return list;
 	}
 
 	@Override
 	public Endpoint serverAddress() {
 		return null;
-		// InetSocketAddress inetSocketAddress =
-		// RpcContext.getContext().getRemoteAddress();
-		// String ipAddr = RpcContext.getContext().getUrl().getIp();
-		// String serverName =
-		// serverNameProvider.resolveServerName(RpcContext.getContext());
-		// return Endpoint.create(serverName, IPConversion.convertToInt(ipAddr),
-		// inetSocketAddress.getPort());
 	}
 
 }

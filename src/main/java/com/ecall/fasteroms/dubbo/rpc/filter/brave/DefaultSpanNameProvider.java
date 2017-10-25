@@ -1,9 +1,8 @@
-package com.github.kristofa.brave.dubbo.support;
+package com.ecall.fasteroms.dubbo.rpc.filter.brave;
 
 import com.alibaba.dubbo.rpc.Invocation;
 import com.alibaba.dubbo.rpc.Invoker;
 import com.alibaba.dubbo.rpc.RpcContext;
-import com.github.kristofa.brave.dubbo.DubboSpanNameProvider;
 
 /**
  * Created by chenjg on 16/8/22.
