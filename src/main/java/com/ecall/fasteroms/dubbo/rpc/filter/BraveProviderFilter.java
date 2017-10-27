@@ -31,6 +31,10 @@ public class BraveProviderFilter implements Filter {
 	private static volatile ServerResponseInterceptor serverResponseInterceptor;
 	private static volatile ServerSpanThreadBinder serverSpanThreadBinder;
 
+	public BraveProviderFilter() {
+		logger.info("-------BraveProviderFilter() @Activate(group = Constants.PROVIDER)");
+	}
+
 	public void initBrave(Invoker<?> invoker) {
 		if (brave == null) {
 			try {

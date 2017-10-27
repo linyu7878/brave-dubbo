@@ -17,6 +17,10 @@ public class HystrixFilter implements Filter {
 	private static final Logger logger = Logger.getLogger(HystrixFilter.class);
 	private static final String enable_hystrix_key = "dubbo.hystrix.enable";
 
+	public HystrixFilter() {
+		logger.info("-------HystrixFilter() @Activate(group = Constants.CONSUMER)");
+	}
+
 	@Override
 	public Result invoke(Invoker<?> invoker, Invocation invocation) throws RpcException {
 		if (!enableHystrix(invoker)) {

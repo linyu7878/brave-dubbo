@@ -32,6 +32,10 @@ public class BraveConsumerFilter implements Filter {
 	private static volatile ClientResponseInterceptor clientResponseInterceptor;
 	private static volatile ClientSpanThreadBinder clientSpanThreadBinder;
 
+	public BraveConsumerFilter() {
+		logger.info("-------BraveConsumerFilter() @Activate(group = Constants.CONSUMER)");
+	}
+
 	public void initBrave(Invoker<?> invoker) {
 		if (brave == null) {
 			try {
