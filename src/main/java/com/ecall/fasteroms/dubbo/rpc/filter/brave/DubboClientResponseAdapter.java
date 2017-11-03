@@ -34,7 +34,8 @@ public class DubboClientResponseAdapter implements ClientResponseAdapter {
 			annotations.add(keyValueAnnotation);
 		} else {
 			if (rpcResult.hasException()) {
-				KeyValueAnnotation keyValueAnnotation = KeyValueAnnotation.create("exception", rpcResult.getException().getMessage());
+				String msg = rpcResult.getException() != null ? rpcResult.getException().getMessage() : "unknow error";
+				KeyValueAnnotation keyValueAnnotation = KeyValueAnnotation.create("exception", msg);
 				annotations.add(keyValueAnnotation);
 			} else {
 				KeyValueAnnotation keyValueAnnotation = KeyValueAnnotation.create("status", "success");

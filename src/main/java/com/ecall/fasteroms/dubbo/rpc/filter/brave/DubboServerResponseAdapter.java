@@ -27,7 +27,8 @@ public class DubboServerResponseAdapter implements ServerResponseAdapter {
 			KeyValueAnnotation keyValueAnnotation = KeyValueAnnotation.create("server_result", "true");
 			annotations.add(keyValueAnnotation);
 		} else {
-			KeyValueAnnotation keyValueAnnotation = KeyValueAnnotation.create("exception", rpcResult.getException().getMessage());
+			String msg = rpcResult.getException() != null ? rpcResult.getException().getMessage() : "unknow error";
+			KeyValueAnnotation keyValueAnnotation = KeyValueAnnotation.create("exception", msg);
 			annotations.add(keyValueAnnotation);
 		}
 		annotations.add(KeyValueAnnotation.create("server_attachments", RpcContext.getContext().getAttachments().toString()));

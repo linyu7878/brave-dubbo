@@ -35,11 +35,13 @@ public class BraveProviderFilter implements Filter {
 		logger.info("-------BraveProviderFilter() @Activate(group = Constants.PROVIDER)");
 	}
 
-	public void initBrave(Invoker<?> invoker) {
+	public boolean initBrave(Invoker<?> invoker) {
 		if (brave == null) {
 			try {
+				BraveParam braveParam = BraveParam.of(invoker.getUrl(), false);
+				if (!braveParam.isHasConfig())
+					return false;
 
-				BraveParam braveParam = BraveParam.of(invoker.getUrl());
 				logger.info("------------BraveProviderFilter.initBrave  dubbo.trace.enable:" + braveParam.isEnable() + ", dubbo.trace.rate:"
 						+ braveParam.getRate() + ", dubbo.tace.serviceName:" + braveParam.getServiceName() + ", dubbo.trace.zipkinHost:"
 						+ braveParam.getZipkinHost() + ", dubbo.trace.ignore:" + braveParam.getIgnore());
@@ -52,24 +54,28 @@ public class BraveProviderFilter implements Filter {
 				logger.info("----------BraveProviderFilter.initBrave success [" + brave + "]");
 			} catch (Exception e) {
 				logger.error(e.getMessage(), e);
+				return false;
 			}
 		}
+		return true;
 	}
 
 	@Override
 	public Result invoke(Invoker<?> invoker, Invocation invocation) throws RpcException {
-		initBrave(invoker);
-
+		boolean b = initBrave(invoker);
+		if (!b) {
+			return invoker.invoke(invocation);
+		}
 		BraveParam data = BraveFactory.getData();
 		if (!data.isEnable()) {
 			return invoker.invoke(invocation);
 		}
 		String interfaceName = invoker.getInterface().getName();
 		String method = invocation.getMethodName();
-
 		if (IgnoreUtil.isIgnore(data.getIgnore(), interfaceName, method)) {
 			return invoker.invoke(invocation);
 		}
+
 		serverRequestInterceptor.handle(new DubboServerRequestAdapter(invoker, invocation, brave.serverTracer()));
 		Result rpcResult = invoker.invoke(invocation);
 		serverResponseInterceptor.handle(new DubboServerResponseAdapter(rpcResult));

@@ -36,10 +36,13 @@ public class BraveConsumerFilter implements Filter {
 		logger.info("-------BraveConsumerFilter() @Activate(group = Constants.CONSUMER)");
 	}
 
-	public void initBrave(Invoker<?> invoker) {
+	public boolean initBrave(Invoker<?> invoker) {
 		if (brave == null) {
 			try {
-				BraveParam braveParam = BraveParam.of(invoker.getUrl());
+				BraveParam braveParam = BraveParam.of(invoker.getUrl(), true);
+				if (!braveParam.isHasConfig())
+					return false;
+
 				logger.info("------------BraveConsumerFilter.initBrave  dubbo.trace.enable:" + braveParam.isEnable() + ", dubbo.trace.rate:"
 						+ braveParam.getRate() + ", dubbo.tace.serviceName:" + braveParam.getServiceName() + ", dubbo.trace.zipkinHost:"
 						+ braveParam.getZipkinHost() + ", dubbo.trace.ignore:" + braveParam.getIgnore());
@@ -52,13 +55,18 @@ public class BraveConsumerFilter implements Filter {
 				logger.info("----------BraveConsumerFilter.initBrave success [" + brave + "]");
 			} catch (Exception e) {
 				logger.error(e.getMessage(), e);
+				return false;
 			}
 		}
+		return true;
 	}
 
 	@Override
 	public Result invoke(Invoker<?> invoker, Invocation invocation) throws RpcException {
-		initBrave(invoker);
+		boolean b = initBrave(invoker);
+		if (!b) {
+			return invoker.invoke(invocation);
+		}
 
 		BraveParam data = BraveFactory.getData();
 		if (!data.isEnable()) {

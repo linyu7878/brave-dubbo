@@ -1,8 +1,11 @@
 package com.ecall.fasteroms.dubbo.rpc.filter.brave;
 
+import org.apache.log4j.Logger;
+
 import com.alibaba.dubbo.common.URL;
 
 public class BraveParam {
+	private static Logger logger = Logger.getLogger(BraveParam.class);
 	/** 服务名 */
 	private String serviceName;
 	/** zipkin服务器ip及端口，不配置默认打印日志 */
@@ -13,6 +16,8 @@ public class BraveParam {
 	private boolean enable;
 
 	private String ignore;
+	// 是否有配置
+	private boolean hasConfig;
 
 	public String getServiceName() {
 		return serviceName;
@@ -54,16 +59,25 @@ public class BraveParam {
 		this.ignore = ignore;
 	}
 
+	public boolean isHasConfig() {
+		return hasConfig;
+	}
+
+	public void setHasConfig(boolean hasConfig) {
+		this.hasConfig = hasConfig;
+	}
+
 	public BraveParam() {
 
 	}
 
-	public BraveParam(String serviceName, String zipkinHost, float rate, boolean enable, String ignore) {
+	public BraveParam(String serviceName, String zipkinHost, float rate, boolean enable, String ignore, boolean hasConfig) {
 		this.serviceName = serviceName;
 		this.zipkinHost = zipkinHost;
 		this.rate = rate;
 		this.enable = enable;
 		this.ignore = ignore;
+		this.hasConfig = hasConfig;
 	}
 
 	/**
@@ -72,15 +86,26 @@ public class BraveParam {
 	 * @param url
 	 * @return
 	 */
-	public static BraveParam of(URL url) {
+	public static BraveParam of(URL url, boolean isConsumer) {
 		if (url == null)
 			return new BraveParam();
 
-		String name = url.getParameter("dubbo.tace.serviceName", "unknow");
+		String full_url = url.toFullString();
+		logger.debug("-----------url:" + full_url);
+
+		boolean hasConfig = full_url.indexOf("dubbo.trace.enable") > 0;
+
+		String name = url.getParameter("dubbo.trace.serviceName", "unknow");
+		if (isConsumer)
+			name = url.getParameter("application", "unknow");
+
 		String zipkinHost = url.getParameter("dubbo.trace.zipkinHost", "");
+		if ("log".equals(zipkinHost))
+			zipkinHost = "";
+
 		float rate = url.getParameter("dubbo.trace.rate", 1.0f);
 		boolean enable = url.getParameter("dubbo.trace.enable", false);
 		String ignore = url.getParameter("dubbo.trace.ignore", "");
-		return new BraveParam(name, zipkinHost, rate, enable, ignore);
+		return new BraveParam(name, zipkinHost, rate, enable, ignore, hasConfig);
 	}
 }
