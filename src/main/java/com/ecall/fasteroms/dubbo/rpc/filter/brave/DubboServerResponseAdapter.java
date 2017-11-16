@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.springframework.util.StringUtils;
+
 import com.alibaba.dubbo.rpc.Result;
 import com.alibaba.dubbo.rpc.RpcContext;
 import com.github.kristofa.brave.KeyValueAnnotation;
@@ -27,7 +29,10 @@ public class DubboServerResponseAdapter implements ServerResponseAdapter {
 			KeyValueAnnotation keyValueAnnotation = KeyValueAnnotation.create("server_result", "true");
 			annotations.add(keyValueAnnotation);
 		} else {
-			String msg = rpcResult.getException() != null ? rpcResult.getException().getMessage() : "unknow error";
+			String msg = rpcResult.getException() != null ? rpcResult.getException().getMessage() : null;
+			if (StringUtils.isEmpty(msg))
+				msg = "unknow error";
+
 			KeyValueAnnotation keyValueAnnotation = KeyValueAnnotation.create("exception", msg);
 			annotations.add(keyValueAnnotation);
 		}
